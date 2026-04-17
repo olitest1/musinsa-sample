@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BenefitHub - Musinsa Style</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    background: #f5f5f5;
+    max-width: 393px;
+    margin: 0 auto;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Status Bar */
+  .status-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 4px 16px;
+    background: #fff;
+    font-size: 14px; font-weight: 600;
+  }
+  .status-bar .time { font-weight: 700; }
+  .status-icons { display: flex; gap: 4px; align-items: center; font-size: 12px; }
+
+  /* Header */
+  .header {
+    background: #fff;
+    padding: 6px 12px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid #eee;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .header-left { display: flex; align-items: center; gap: 8px; }
+  .header-logo {
+    font-size: 18px; font-weight: 900; letter-spacing: -0.5px;
+    color: #000;
+  }
+  .header-badge {
+    background: #000; color: #fff; font-size: 10px; padding: 2px 6px;
+    border-radius: 3px; font-weight: 700;
+  }
+  .header-icons { display: flex; gap: 16px; align-items: center; }
+  .header-icons svg { width: 22px; height: 22px; }
+  .icon-btn {
+    position: relative; background: none; border: none; cursor: pointer; padding: 2px;
+  }
+  .icon-badge {
+    position: absolute; top: -4px; right: -6px;
+    background: #ff4444; color: #fff; font-size: 9px;
+    width: 16px; height: 16px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-weight: 700;
+  }
+
+  /* Search Bar */
+  .search-bar {
+    background: #fff; padding: 4px 12px 6px;
+  }
+  .search-input {
+    width: 100%; padding: 8px 12px; border-radius: 6px;
+    border: 1px solid #ddd; background: #f7f7f7;
+    font-size: 14px; color: #999; outline: none;
+  }
+
+  /* Top Category Tabs */
+  .top-tabs {
+    background: #fff;
+    display: flex;
+    overflow-x: auto;
+    border-bottom: 2px solid #eee;
+    scrollbar-width: none;
+  }
+  .top-tabs::-webkit-scrollbar { display: none; }
+  .top-tab {
+    flex-shrink: 0;
+    padding: 10px 12px;
+    font-size: 13px; font-weight: 500;
+    color: #999; cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.2s;
+  }
+  .top-tab.active {
+    color: #000; font-weight: 700;
+    border-bottom-color: #000;
+  }
+  .top-tab.highlight {
+    color: #ff4444; font-weight: 700;
+  }
+
+  /* Quick Menu Chips */
+  .quick-menu {
+    background: #fff;
+    display: flex;
+    gap: 6px;
+    padding: 6px 10px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .quick-menu::-webkit-scrollbar { display: none; }
+  .quick-chip {
+    flex-shrink: 0;
+    display: flex; align-items: center; gap: 5px;
+    padding: 5px 10px;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    background: #fff;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+  }
+  .quick-chip:active { background: #f5f5f5; }
+  .quick-chip-icon {
+    width: 22px; height: 22px; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; flex-shrink: 0;
+  }
+  .quick-chip-icon.red { background: #ffebee; }
+  .quick-chip-icon.orange { background: #fff3e0; }
+  .quick-chip-icon.blue { background: #e3f2fd; }
+  .quick-chip-icon.purple { background: #f3e5f5; }
+  .quick-chip-icon.green { background: #e8f5e9; }
+  .quick-chip-label { font-size: 12px; font-weight: 600; color: #111; }
+
+  /* Pill Chips (horizontal scroll) */
+  .chip-row {
+    background: #fff;
+    display: flex; gap: 6px;
+    padding: 8px 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .chip-row::-webkit-scrollbar { display: none; }
+  .chip {
+    flex-shrink: 0;
+    padding: 6px 12px; border-radius: 16px;
+    font-size: 12px; font-weight: 500;
+    border: 1px solid #ddd; background: #fff;
+    cursor: pointer; white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .chip.active {
+    background: #000; color: #fff; border-color: #000;
+  }
+
+  /* Attendance Check Banner */
+  .attendance-banner {
+    background: #fff;
+    margin: 0;
+    padding: 10px 12px;
+  }
+  .attendance-card {
+    display: flex; align-items: center;
+    background: #f8f8fa;
+    border-radius: 10px;
+    padding: 12px 14px;
+    gap: 12px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .attendance-card:active { background: #f0f0f3; }
+  .attendance-icon {
+    font-size: 28px; flex-shrink: 0;
+  }
+  .attendance-info { flex: 1; min-width: 0; }
+  .attendance-title {
+    font-size: 14px; font-weight: 800; color: #000;
+    margin-bottom: 6px;
+  }
+  .attendance-progress {
+    display: flex; gap: 4px; margin-bottom: 4px;
+  }
+  .att-dot {
+    width: 28px; height: 6px; border-radius: 3px;
+    background: #e0e0e0;
+  }
+  .att-dot.done { background: #000; }
+  .att-dot.current { background: #555; }
+  .attendance-sub {
+    font-size: 11px; color: #999;
+  }
+  .attendance-btn {
+    flex-shrink: 0;
+    background: #000; color: #fff;
+    border: none; border-radius: 18px;
+    padding: 8px 16px;
+    font-size: 12px; font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .attendance-btn:active { opacity: 0.7; }
+
+  /* Section Header */
+  .section-header {
+    background: #fff;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 12px 8px;
+  }
+  .section-title { font-size: 15px; font-weight: 800; color: #000; }
+  .section-more { font-size: 13px; color: #999; cursor: pointer; }
+
+  /* Product Grid (2-column like Musinsa) */
+  .product-grid {
+    background: #fff;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding: 0 8px 8px;
+  }
+  .product-card {
+    padding: 4px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .product-card:active { opacity: 0.7; }
+  .product-img {
+    width: 100%; aspect-ratio: 1;
+    background: #f0f0f0; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+    margin-bottom: 6px;
+  }
+  .product-img img {
+    width: 100%; height: 100%; object-fit: cover; border-radius: 8px;
+  }
+  .product-img .placeholder-icon {
+    font-size: 36px; color: #ccc;
+  }
+  .product-img .badge-label {
+    position: absolute; top: 8px; left: 8px;
+    background: #ff4444; color: #fff;
+    font-size: 10px; font-weight: 700;
+    padding: 3px 8px; border-radius: 4px;
+  }
+  .product-img .badge-label.blue { background: #2196f3; }
+  .product-img .badge-label.green { background: #4caf50; }
+  .product-img .badge-label.black { background: #000; }
+  .product-heart {
+    position: absolute; bottom: 8px; right: 8px;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: rgba(255,255,255,0.9);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: #ccc; cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  .product-brand {
+    font-size: 12px; font-weight: 700; color: #000;
+    margin-bottom: 2px;
+  }
+  .product-name {
+    font-size: 11px; color: #666;
+    margin-bottom: 4px;
+    display: -webkit-box; -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical; overflow: hidden;
+    line-height: 1.4;
+  }
+  .product-price { display: flex; align-items: baseline; gap: 4px; }
+  .product-discount { font-size: 14px; font-weight: 800; color: #ff4444; }
+  .product-discount.blue-text { color: #2196f3; }
+  .product-amount { font-size: 14px; font-weight: 700; color: #000; }
+  .product-original {
+    font-size: 11px; color: #bbb; text-decoration: line-through;
+  }
+
+  /* RMP Card Carousel */
+  .rmp-section { background: #fff; margin-bottom: 0; padding-bottom: 10px; }
+  .rmp-scroll {
+    display: flex;
+    gap: 6px;
+    padding: 0 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .rmp-scroll::-webkit-scrollbar { display: none; }
+  .rmp-page {
+    flex-shrink: 0;
+    width: 100%;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    scroll-snap-align: start;
+  }
+  .rmp-card {
+    border-radius: 8px; overflow: hidden;
+    cursor: pointer; position: relative;
+  }
+  .rmp-card-img {
+    width: 100%; height: 100px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-size: 12px;
+    position: relative;
+  }
+  .rmp-card-img.dark { background: linear-gradient(135deg, #2c2c2c, #444); }
+  .rmp-card-img.warm { background: linear-gradient(135deg, #e65100, #ff8f00); }
+  .rmp-card-img.cool { background: linear-gradient(135deg, #1565c0, #42a5f5); }
+  .rmp-card-info {
+    padding: 6px 8px; background: #fff;
+    border: 1px solid #eee; border-top: none;
+    border-radius: 0 0 8px 8px;
+  }
+  .rmp-card-title { font-size: 12px; font-weight: 700; color: #000; }
+  .rmp-card-sub { font-size: 10px; color: #999; margin-top: 1px; }
+  .rmp-reward {
+    position: absolute; top: 6px; right: 6px;
+    background: rgba(255,255,255,0.95); color: #ff4444;
+    font-size: 10px; font-weight: 800;
+    padding: 3px 8px; border-radius: 10px;
+  }
+  .rmp-pager {
+    display: flex; justify-content: center; gap: 5px;
+    padding: 8px 0 2px;
+  }
+  .rmp-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #ddd; transition: background 0.2s;
+  }
+  .rmp-dot.active { background: #333; }
+
+  /* Benefit List (Musinsa-style cards) */
+  .benefit-list { background: #fff; padding: 0 12px 10px; }
+  .benefit-item {
+    display: flex; align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .benefit-item:last-child { border-bottom: none; }
+  .benefit-item:active { background: #fafafa; }
+  .benefit-logo {
+    width: 44px; height: 44px; border-radius: 8px;
+    background: #f5f5f5; display: flex;
+    align-items: center; justify-content: center;
+    margin-right: 10px; flex-shrink: 0;
+    font-size: 10px; color: #999; font-weight: 700;
+    border: 1px solid #eee;
+  }
+  .benefit-info { flex: 1; min-width: 0; }
+  .benefit-brand { font-size: 14px; font-weight: 700; color: #000; }
+  .benefit-desc {
+    font-size: 12px; color: #888; margin-top: 2px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .benefit-reward {
+    flex-shrink: 0; text-align: right;
+  }
+  .benefit-amount { font-size: 15px; font-weight: 800; color: #ff4444; }
+  .benefit-type { font-size: 10px; color: #999; margin-top: 2px; }
+
+  /* Section Divider */
+  .divider { height: 6px; background: #f0f0f0; }
+
+  /* Gender Tabs like Musinsa */
+  .gender-tabs {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 12px; background: #fff;
+  }
+  .gender-tab {
+    padding: 5px 12px; border-radius: 14px;
+    font-size: 12px; font-weight: 500;
+    border: 1px solid #ddd; background: #fff;
+    cursor: pointer; color: #666;
+  }
+  .gender-tab.active {
+    background: #000; color: #fff; border-color: #000;
+  }
+
+  /* Bottom Nav */
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 100%; max-width: 393px;
+    background: #fff;
+    display: flex; justify-content: space-around;
+    padding: 6px 0 20px;
+    border-top: 1px solid #eee;
+    z-index: 200;
+  }
+  .nav-item {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    cursor: pointer; padding: 4px 8px;
+  }
+  .nav-icon { font-size: 20px; color: #999; }
+  .nav-icon.active { color: #000; }
+  .nav-label { font-size: 10px; color: #999; }
+  .nav-label.active { color: #000; font-weight: 700; }
+
+  /* Spacer for bottom nav */
+  .bottom-spacer { height: 80px; }
+
+  /* Float button */
+  .float-btn {
+    position: fixed; bottom: 90px;
+    left: calc(50% + 140px);
+    width: 44px; height: 44px;
+    border-radius: 50%; background: #000;
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    cursor: pointer; font-size: 20px; z-index: 150;
+    transition: transform 0.2s;
+  }
+  .float-btn:active { transform: scale(0.9); }
+
+  /* Animations */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .product-card { animation: fadeInUp 0.4s ease both; }
+  .product-card:nth-child(1) { animation-delay: 0.05s; }
+  .product-card:nth-child(2) { animation-delay: 0.1s; }
+  .product-card:nth-child(3) { animation-delay: 0.15s; }
+  .product-card:nth-child(4) { animation-delay: 0.2s; }
+  .product-card:nth-child(5) { animation-delay: 0.25s; }
+  .product-card:nth-child(6) { animation-delay: 0.3s; }
+</style>
+</head>
+<body>
+
+<!-- Status Bar -->
+<div class="status-bar">
+  <span class="time">10:08</span>
+  <div class="status-icons">
+    <span>LTE</span>
+    <span>&#9632;</span>
+  </div>
+</div>
+
+<!-- Header (Musinsa-style) -->
+<div class="header">
+  <div class="header-left">
+    <a href="musinsa.html" style="text-decoration:none;color:#000;display:flex;align-items:center;margin-right:6px;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+    </a>
+    <div class="header-logo">BENEFIT HUB</div>
+  </div>
+  <div class="header-icons">
+    <button class="icon-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    </button>
+    <button class="icon-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+      <span class="icon-badge">3</span>
+    </button>
+    <button class="icon-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- Search Bar -->
+<div class="search-bar">
+  <input class="search-input" type="text" placeholder="포인트 받고 혜택 찾기" readonly>
+</div>
+
+<!-- Top Category Tabs -->
+<div class="top-tabs">
+  <div class="top-tab active">추천</div>
+  <div class="top-tab">간단 미션</div>
+  <div class="top-tab highlight">구독하기</div>
+  <div class="top-tab">참여하기</div>
+  <div class="top-tab">생활미션</div>
+  <div class="top-tab">적립내역</div>
+  <div class="top-tab">이벤트</div>
+</div>
+
+<!-- Quick Menu (Musinsa chip style) -->
+<div class="quick-menu">
+  <div class="quick-chip">
+    <div class="quick-chip-icon red">&#127873;</div>
+    <span class="quick-chip-label">선물상자</span>
+  </div>
+  <div class="quick-chip">
+    <div class="quick-chip-icon orange">&#127922;</div>
+    <span class="quick-chip-label">행운뽑기</span>
+  </div>
+  <div class="quick-chip">
+    <div class="quick-chip-icon blue">&#128176;</div>
+    <span class="quick-chip-label">복주머니</span>
+  </div>
+  <div class="quick-chip">
+    <div class="quick-chip-icon purple">&#128142;</div>
+    <span class="quick-chip-label">주간 미션</span>
+  </div>
+  <div class="quick-chip">
+    <div class="quick-chip-icon green">&#128196;</div>
+    <span class="quick-chip-label">적립내역</span>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Attendance Check Banner -->
+<div class="attendance-banner" onclick="location.href='attendance.html'" style="cursor:pointer;">
+  <div class="attendance-card">
+    <div class="attendance-icon">&#128197;</div>
+    <div class="attendance-info">
+      <div class="attendance-title">오늘의 출석체크</div>
+      <div class="attendance-progress">
+        <div class="att-dot done"></div>
+        <div class="att-dot done"></div>
+        <div class="att-dot current"></div>
+        <div class="att-dot"></div>
+        <div class="att-dot"></div>
+        <div class="att-dot"></div>
+        <div class="att-dot"></div>
+      </div>
+      <div class="attendance-sub">보너스까지 4일 남았어요</div>
+    </div>
+    <button class="attendance-btn">출석하기</button>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- RMP Section (Musinsa's horizontal card scroll) -->
+<div class="rmp-section">
+  <div class="section-header">
+    <span class="section-title">지금 주목할 만한 브랜드</span>
+    <span class="section-more">더보기 ></span>
+  </div>
+  <div class="rmp-scroll" id="rmpScroll">
+    <!-- Page 1 -->
+    <div class="rmp-page">
+      <div class="rmp-card">
+        <div class="rmp-card-img dark">
+          <span>&#128270; 스마트스토어 정보찾기</span>
+          <span class="rmp-reward">+6P</span>
+        </div>
+        <div class="rmp-card-info">
+          <div class="rmp-card-title">네이버 스마트스토어</div>
+          <div class="rmp-card-sub">정답입력하면 포인트 지급!</div>
+        </div>
+      </div>
+      <div class="rmp-card">
+        <div class="rmp-card-img warm">
+          <span>&#127942; 온쇼페 하루 특가</span>
+          <span class="rmp-reward">즉시 1원</span>
+        </div>
+        <div class="rmp-card-info">
+          <div class="rmp-card-title">온쇼페</div>
+          <div class="rmp-card-sub">키즈영양제/멀티비타민 단 하루 특가</div>
+        </div>
+      </div>
+      <div class="rmp-card">
+        <div class="rmp-card-img cool">
+          <span>&#128178; 앱 설치 리워드</span>
+          <span class="rmp-reward">+50P</span>
+        </div>
+        <div class="rmp-card-info">
+          <div class="rmp-card-title">토스</div>
+          <div class="rmp-card-sub">토스 앱 설치 / 신규가입 이벤트</div>
+        </div>
+      </div>
+      <div class="rmp-card">
+        <div class="rmp-card-img" style="background:linear-gradient(135deg,#43e97b,#38f9d7);">
+          <span>&#127942; 퀴즈 이벤트</span>
+          <span class="rmp-reward">+20P</span>
+        </div>
+        <div class="rmp-card-info">
+          <div class="rmp-card-title">KB국민은행</div>
+          <div class="rmp-card-sub">금융 상식 퀴즈 - OX 챌린지</div>
+        </div>
+      </div>
+    </div>
+    <!-- Page 2 -->
+    <div class="rmp-page">
+      <div class="rmp-card">
+        <div class="rmp-card-img" style="background:linear-gradient(135deg,#f7971e,#ffd200);">
+          <span>&#128240; 영상 시청</span>
+          <span class="rmp-reward">+3P</span>
+        </div>
+        <div class="rmp-card-info">
+          <div class="rmp-card-title">삼성카드</div>
+          <div class="rmp-card-sub">iD SIMPLE 카드 혜택 영상 시청</div>
+        </div>
+      </div>
+      <div class="rmp-card">
+        <div class="rmp-card-img" style="background:linear-gradient(135deg,#a18cd1,#fbc2eb);">
+          <span>&#128241; 앱 다운로드</span>
+          <span class="rmp-reward">+30P</span>
+        </div>
+        <div class="rmp-card-info">
+          <div class="rmp-card-title">NH농협은행</div>
+          <div class="rmp-card-sub">올원뱅크 앱 설치 / 회원가입</div>
+        </div>
+      </div>
+      <div class="rmp-card">
+        <div class="rmp-card-img" style="background:linear-gradient(135deg,#667eea,#764ba2);">
+          <span>&#128179; 카드 신청</span>
+          <span class="rmp-reward">+500P</span>
+        </div>
+        <div class="rmp-card-info">
+          <div class="rmp-card-title">신한카드</div>
+          <div class="rmp-card-sub">Deep Dream 체크카드 신규 발급</div>
+        </div>
+      </div>
+      <div class="rmp-card">
+        <div class="rmp-card-img" style="background:linear-gradient(135deg,#f093fb,#f5576c);">
+          <span>&#127381; 설문 참여</span>
+          <span class="rmp-reward">+10P</span>
+        </div>
+        <div class="rmp-card-info">
+          <div class="rmp-card-title">우리은행</div>
+          <div class="rmp-card-sub">금융생활 만족도 간단 설문조사</div>
+        </div>
+      </div>
+    </div>
+    <!-- Page 3 -->
+    <div class="rmp-page">
+      <div class="rmp-card">
+        <div class="rmp-card-img" style="background:linear-gradient(135deg,#4facfe,#00f2fe);">
+          <span>&#128176; 적금 가입</span>
+          <span class="rmp-reward">+100P</span>
+        </div>
+        <div class="rmp-card-info">
+          <div class="rmp-card-title">카카오뱅크</div>
+          <div class="rmp-card-sub">26주 적금 가입 - 연 4.5% 특별금리</div>
+        </div>
+      </div>
+      <div class="rmp-card">
+        <div class="rmp-card-img" style="background:linear-gradient(135deg,#fa709a,#fee140);">
+          <span>&#128722; 쇼핑 혜택</span>
+          <span class="rmp-reward">즉시 1원</span>
+        </div>
+        <div class="rmp-card-info">
+          <div class="rmp-card-title">온쇼페</div>
+          <div class="rmp-card-sub">프로바이오틱스 유산균 1원딜 특가</div>
+        </div>
+      </div>
+      <div class="rmp-card">
+        <div class="rmp-card-img dark">
+          <span>&#128270; 정보 찾기</span>
+          <span class="rmp-reward">+8P</span>
+        </div>
+        <div class="rmp-card-info">
+          <div class="rmp-card-title">네이버 블로그</div>
+          <div class="rmp-card-sub">스마트스토어 인기상품 리뷰 방문</div>
+        </div>
+      </div>
+      <div class="rmp-card">
+        <div class="rmp-card-img" style="background:linear-gradient(135deg,#e65100,#ff8f00);">
+          <span>&#127942; 출석 체크</span>
+          <span class="rmp-reward">+5P</span>
+        </div>
+        <div class="rmp-card-info">
+          <div class="rmp-card-title">하나은행</div>
+          <div class="rmp-card-sub">하나원큐 매일 출석체크 이벤트</div>
+        </div>
+      </div>
+    </div>
+    <!-- Page 4 -->
+    <div class="rmp-page">
+      <div class="rmp-card">
+        <div class="rmp-card-img" style="background:linear-gradient(135deg,#30cfd0,#330867);">
+          <span>&#128241; 구독하기</span>
+          <span class="rmp-reward">+15P</span>
+        </div>
+        <div class="rmp-card-info">
+          <div class="rmp-card-title">현대카드</div>
+          <div class="rmp-card-sub">현대카드 공식 유튜브 채널 구독</div>
+        </div>
+      </div>
+      <div class="rmp-card">
+        <div class="rmp-card-img" style="background:linear-gradient(135deg,#a8e063,#56ab2f);">
+          <span>&#128178; 송금 이벤트</span>
+          <span class="rmp-reward">+200P</span>
+        </div>
+        <div class="rmp-card-info">
+          <div class="rmp-card-title">케이뱅크</div>
+          <div class="rmp-card-sub">첫 송금 이벤트 - 수수료 무료</div>
+        </div>
+      </div>
+      <div class="rmp-card">
+        <div class="rmp-card-img" style="background:linear-gradient(135deg,#ffecd2,#fcb69f);">
+          <span>&#127873; 친구 초대</span>
+          <span class="rmp-reward">+50P</span>
+        </div>
+        <div class="rmp-card-info">
+          <div class="rmp-card-title">토스</div>
+          <div class="rmp-card-sub">친구 초대하면 둘 다 포인트 적립</div>
+        </div>
+      </div>
+      <div class="rmp-card">
+        <div class="rmp-card-img" style="background:linear-gradient(135deg,#c471f5,#fa71cd);">
+          <span>&#128240; 뉴스 읽기</span>
+          <span class="rmp-reward">+2P</span>
+        </div>
+        <div class="rmp-card-info">
+          <div class="rmp-card-title">삼성증권</div>
+          <div class="rmp-card-sub">오늘의 금융 뉴스 브리핑 읽기</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="rmp-pager" id="rmpPager">
+    <div class="rmp-dot active"></div>
+    <div class="rmp-dot"></div>
+    <div class="rmp-dot"></div>
+    <div class="rmp-dot"></div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Benefit Section (Musinsa product grid style) -->
+<div style="background:#fff;">
+  <div class="section-header">
+    <span class="section-title">나만의 혜택 찾기</span>
+    <span class="section-more">더보기 ></span>
+  </div>
+
+  <!-- Filter Chips -->
+  <div class="chip-row">
+    <div class="chip active">전체</div>
+    <div class="chip">간단 미션</div>
+    <div class="chip">구독하기</div>
+    <div class="chip">참여하기</div>
+    <div class="chip">생활미션</div>
+  </div>
+
+  <!-- Gender-like Tabs -->
+  <div class="gender-tabs">
+    <div class="gender-tab active">ALL</div>
+    <div class="gender-tab">인기순</div>
+    <div class="gender-tab">최신순</div>
+    <div class="gender-tab">고적립순</div>
+  </div>
+
+  <!-- Product Grid -->
+  <div class="product-grid">
+    <div class="product-card">
+      <div class="product-img">
+        <div style="width:100%;height:100%;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;border-radius:8px;">
+          <span style="color:#fff;font-size:28px;">&#128241;</span>
+        </div>
+        <span class="badge-label">HOT</span>
+        <div class="product-heart">&#9825;</div>
+      </div>
+      <div class="product-brand">우리은행</div>
+      <div class="product-name">인스타그램 팔로우하기</div>
+      <div class="product-price">
+        <span class="product-discount">100원</span>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-img">
+        <div style="width:100%;height:100%;background:linear-gradient(135deg,#f093fb,#f5576c);display:flex;align-items:center;justify-content:center;border-radius:8px;">
+          <span style="color:#fff;font-size:28px;">&#128270;</span>
+        </div>
+        <span class="badge-label blue">EASY</span>
+        <div class="product-heart">&#9825;</div>
+      </div>
+      <div class="product-brand">네이버 스마트스토어</div>
+      <div class="product-name">정답입력하면 포인트 지급!</div>
+      <div class="product-price">
+        <span class="product-discount blue-text">+6P</span>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-img">
+        <div style="width:100%;height:100%;background:linear-gradient(135deg,#4facfe,#00f2fe);display:flex;align-items:center;justify-content:center;border-radius:8px;">
+          <span style="color:#fff;font-size:28px;">&#128179;</span>
+        </div>
+        <span class="badge-label green">NEW</span>
+        <div class="product-heart">&#9825;</div>
+      </div>
+      <div class="product-brand">카카오뱅크</div>
+      <div class="product-name">카카오뱅크 계좌 개설하기</div>
+      <div class="product-price">
+        <span class="product-discount">500원</span>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-img">
+        <div style="width:100%;height:100%;background:linear-gradient(135deg,#fa709a,#fee140);display:flex;align-items:center;justify-content:center;border-radius:8px;">
+          <span style="color:#fff;font-size:28px;">&#127922;</span>
+        </div>
+        <span class="badge-label black">PICK</span>
+        <div class="product-heart">&#9825;</div>
+      </div>
+      <div class="product-brand">토스</div>
+      <div class="product-name">토스 앱 설치 후 적립받기</div>
+      <div class="product-price">
+        <span class="product-discount">+50P</span>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-img">
+        <div style="width:100%;height:100%;background:linear-gradient(135deg,#a18cd1,#fbc2eb);display:flex;align-items:center;justify-content:center;border-radius:8px;">
+          <span style="color:#fff;font-size:28px;">&#128240;</span>
+        </div>
+        <span class="badge-label">HOT</span>
+        <div class="product-heart">&#9825;</div>
+      </div>
+      <div class="product-brand">KB국민은행</div>
+      <div class="product-name">유튜브 구독하기</div>
+      <div class="product-price">
+        <span class="product-discount">100원</span>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-img">
+        <div style="width:100%;height:100%;background:linear-gradient(135deg,#ffecd2,#fcb69f);display:flex;align-items:center;justify-content:center;border-radius:8px;">
+          <span style="font-size:28px;">&#128722;</span>
+        </div>
+        <span class="badge-label green">1원</span>
+        <div class="product-heart">&#9825;</div>
+      </div>
+      <div class="product-brand">온쇼페</div>
+      <div class="product-name">키즈영양제 단 하루 특가!</div>
+      <div class="product-price">
+        <span class="product-discount">즉시 1원</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- More Benefits (List style like Musinsa's secondary listings) -->
+<div style="background:#fff;">
+  <div class="section-header">
+    <span class="section-title">모두가 주목한 혜택</span>
+    <span class="section-more">더보기 ></span>
+  </div>
+  <div class="benefit-list">
+    <div class="benefit-item">
+      <div class="benefit-logo">우리</div>
+      <div class="benefit-info">
+        <div class="benefit-brand">우리은행 인스타그램</div>
+        <div class="benefit-desc">인스타 팔로우하기</div>
+      </div>
+      <div class="benefit-reward">
+        <div class="benefit-amount">100원</div>
+        <div class="benefit-type">참여형</div>
+      </div>
+    </div>
+    <div class="benefit-item">
+      <div class="benefit-logo">NH</div>
+      <div class="benefit-info">
+        <div class="benefit-brand">NH농협은행</div>
+        <div class="benefit-desc">앱 설치하고 포인트 받기</div>
+      </div>
+      <div class="benefit-reward">
+        <div class="benefit-amount">200원</div>
+        <div class="benefit-type">설치형</div>
+      </div>
+    </div>
+    <div class="benefit-item">
+      <div class="benefit-logo">KB</div>
+      <div class="benefit-info">
+        <div class="benefit-brand">KB국민카드</div>
+        <div class="benefit-desc">카드 신청하고 혜택 받기</div>
+      </div>
+      <div class="benefit-reward">
+        <div class="benefit-amount">500원</div>
+        <div class="benefit-type">신청형</div>
+      </div>
+    </div>
+    <div class="benefit-item">
+      <div class="benefit-logo">신한</div>
+      <div class="benefit-info">
+        <div class="benefit-brand">신한은행</div>
+        <div class="benefit-desc">퀴즈 풀고 적립받기</div>
+      </div>
+      <div class="benefit-reward">
+        <div class="benefit-amount">+10P</div>
+        <div class="benefit-type">퀴즈형</div>
+      </div>
+    </div>
+    <div class="benefit-item">
+      <div class="benefit-logo">삼성</div>
+      <div class="benefit-info">
+        <div class="benefit-brand">삼성카드</div>
+        <div class="benefit-desc">영상 시청하고 포인트 받기</div>
+      </div>
+      <div class="benefit-reward">
+        <div class="benefit-amount">+5P</div>
+        <div class="benefit-type">시청형</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="bottom-spacer"></div>
+
+<!-- Float Button -->
+<div class="float-btn">&#8593;</div>
+
+<!-- Bottom Navigation (Musinsa-style) -->
+<div class="bottom-nav">
+  <div class="nav-item">
+    <span class="nav-icon">&#128269;</span>
+    <span class="nav-label">탐색</span>
+  </div>
+  <div class="nav-item">
+    <span class="nav-icon">&#9733;</span>
+    <span class="nav-label">미션</span>
+  </div>
+  <div class="nav-item">
+    <span class="nav-icon active">&#127968;</span>
+    <span class="nav-label active">혜택</span>
+  </div>
+  <div class="nav-item">
+    <span class="nav-icon">&#9829;</span>
+    <span class="nav-label">찜</span>
+  </div>
+  <div class="nav-item">
+    <span class="nav-icon">&#128100;</span>
+    <span class="nav-label">마이</span>
+  </div>
+</div>
+
+<script>
+  // Tab interactions
+  document.querySelectorAll('.top-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.top-tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', function() {
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  document.querySelectorAll('.gender-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.gender-tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', function() {
+      document.querySelectorAll('.nav-item .nav-icon').forEach(i => i.classList.remove('active'));
+      document.querySelectorAll('.nav-item .nav-label').forEach(l => l.classList.remove('active'));
+      this.querySelector('.nav-icon').classList.add('active');
+      this.querySelector('.nav-label').classList.add('active');
+    });
+  });
+
+  // Heart toggle
+  document.querySelectorAll('.product-heart').forEach(heart => {
+    heart.addEventListener('click', function(e) {
+      e.stopPropagation();
+      this.innerHTML = this.innerHTML.includes('9825') ? '&#9829;' : '&#9825;';
+      this.style.color = this.innerHTML.includes('9829') ? '#ff4444' : '#ccc';
+    });
+  });
+
+  // RMP pager
+  const rmpScroll = document.getElementById('rmpScroll');
+  const rmpDots = document.querySelectorAll('#rmpPager .rmp-dot');
+  rmpScroll.addEventListener('scroll', () => {
+    const idx = Math.round(rmpScroll.scrollLeft / rmpScroll.clientWidth);
+    rmpDots.forEach((d, i) => d.classList.toggle('active', i === idx));
+  });
+
+  // Scroll to top
+  document.querySelector('.float-btn').addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+
+</body>
+</html>
