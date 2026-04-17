@@ -83,40 +83,52 @@
   /* Attendance Entry Banner */
   .att-entry-banner {
     margin: 8px 12px;
-    background: linear-gradient(135deg, #000 0%, #1a1a2e 100%);
-    border-radius: 10px;
+    background: #f8f8fa;
+    border-radius: 12px;
     padding: 14px 16px;
     display: flex; align-items: center; gap: 12px;
     cursor: pointer;
-    transition: opacity 0.15s;
+    transition: background 0.15s;
     text-decoration: none;
   }
-  .att-entry-banner:active { opacity: 0.85; }
-  .att-entry-left { flex: 1; }
-  .att-entry-tag {
-    display: inline-block;
-    font-size: 10px; font-weight: 700; color: #000;
-    background: #ffe500; padding: 2px 8px; border-radius: 10px;
+  .att-entry-banner:active { background: #f0f0f3; }
+  .att-entry-icon {
+    font-size: 36px; flex-shrink: 0;
+  }
+  .att-entry-center { flex: 1; min-width: 0; }
+  .att-entry-header {
+    display: flex; align-items: center; gap: 6px;
     margin-bottom: 6px;
   }
+  .att-entry-tag {
+    display: inline-block;
+    font-size: 9px; font-weight: 700; color: #000;
+    background: #ffe500; padding: 2px 6px; border-radius: 8px;
+  }
   .att-entry-title {
-    font-size: 15px; font-weight: 800; color: #fff;
-    line-height: 1.4;
+    font-size: 14px; font-weight: 800; color: #000;
   }
+  .att-entry-progress {
+    display: flex; gap: 4px; margin-bottom: 4px;
+  }
+  .att-prog-dot {
+    width: 28px; height: 5px; border-radius: 3px;
+    background: #e0e0e0;
+  }
+  .att-prog-dot.done { background: #000; }
+  .att-prog-dot.current { background: #888; }
   .att-entry-sub {
-    font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 4px;
+    font-size: 11px; color: #999;
   }
-  .att-entry-right {
-    display: flex; flex-direction: column; align-items: center; gap: 4px;
-    flex-shrink: 0;
-  }
-  .att-entry-icon { font-size: 32px; }
   .att-entry-btn {
-    background: #fff; color: #000;
-    font-size: 11px; font-weight: 700;
-    padding: 4px 12px; border-radius: 12px;
+    flex-shrink: 0;
+    background: #000; color: #fff;
+    font-size: 12px; font-weight: 700;
+    padding: 10px 18px; border-radius: 20px;
     border: none; cursor: pointer;
+    transition: opacity 0.15s;
   }
+  .att-entry-btn:active { opacity: 0.7; }
 
   /* Hero Banner */
   .hero {
@@ -208,12 +220,6 @@
   .product-card:nth-child(3) { animation-delay: 0.15s; }
   .product-card:nth-child(4) { animation-delay: 0.2s; }
 
-  /* Pulse animation for banner */
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-  }
-  .att-entry-icon { animation: pulse 2s ease-in-out infinite; }
 </style>
 </head>
 <body>
@@ -264,17 +270,26 @@
   <div class="q-chip"><div class="q-chip-icon" style="background:#fff3e0;">&#127873;</div> 쿠폰</div>
 </div>
 
-<!-- Attendance Entry Banner => links to BenefitHub -->
+<!-- Attendance Entry Banner -->
 <a class="att-entry-banner" href="attendance.html">
-  <div class="att-entry-left">
-    <div class="att-entry-tag">BENEFIT HUB</div>
-    <div class="att-entry-title">매일 출석하고<br>포인트 받아가세요</div>
-    <div class="att-entry-sub">오늘의 출석체크 + 혜택 모아보기</div>
+  <div class="att-entry-icon">&#128197;</div>
+  <div class="att-entry-center">
+    <div class="att-entry-header">
+      <span class="att-entry-tag">BENEFIT HUB</span>
+      <span class="att-entry-title">오늘의 출석체크</span>
+    </div>
+    <div class="att-entry-progress">
+      <div class="att-prog-dot done"></div>
+      <div class="att-prog-dot done"></div>
+      <div class="att-prog-dot current"></div>
+      <div class="att-prog-dot"></div>
+      <div class="att-prog-dot"></div>
+      <div class="att-prog-dot"></div>
+      <div class="att-prog-dot"></div>
+    </div>
+    <div class="att-entry-sub">보너스까지 4일 남았어요</div>
   </div>
-  <div class="att-entry-right">
-    <div class="att-entry-icon">&#128197;</div>
-    <div class="att-entry-btn">출석하기 ></div>
-  </div>
+  <div class="att-entry-btn">출석하기</div>
 </a>
 
 <!-- Hero Banner -->
